@@ -1,9 +1,9 @@
-import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import React, { useState} from "react";
+import {StyleSheet, FlatList,View,TouchableOpacity,Linking } from 'react-native';
 import { useQuery } from 'react-query';
 
-import { Text } from '../components/Text';
 import colors from '../constants/colors';
+import { Text } from '../components/Text';
 
 const styles = StyleSheet.create({
   container: {
@@ -13,37 +13,36 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   item: {
-    paddingVertical: 10,
+    paddingVertical: 20,
   },
 });
 
 export const Post = ({ route }) => {
-  const post = route?.params?.post;
+  const [data, setData] = useState([]);
 
-  const { data: comments } = useQuery(['comments', post.id], () =>
+  useQuery("repoData", () =>
     fetch(
-      `https://jsonplaceholder.typicode.com/comments?postId=${post.id}`,
-    ).then(res => res.json()),
+      "https://curriculo-quarkus.herokuapp.com/projetos"
+    ).then((res) => res.json()).then((res) => setData(res))
   );
 
+
   return (
-    <ScrollView style={styles.container}>
-      <Text type="header">Título: {post.title}</Text>
-      <Text>Subtitulo:</Text>
-      <Text>{post.body}</Text>
-      {comments && comments.length > 0 && (
-        <>
-          <Text type="header" style={{ marginTop: 20 }}>
-            Descrição
-          </Text>
-          {comments.map(comment => (
-            <View key={comment.id} style={styles.item}>
-              <Text>{comment.body}</Text>
-              <Text>{comment.email}</Text>
-            </View>
-          ))}
-        </>
+    <FlatList
+      data={data}
+      style={styles.container}
+      keyExtractor={item => `${item.nome}`}
+      renderItem={({ item }) => (
+          <View style={styles.item}>
+            <TouchableOpacity onPress={() => Linking.openURL(item.linkGithub)}>
+            <Text>Nome: {item.nome}</Text>
+            <Text>Linguagem: {item.linguagem}</Text>
+            <Text>Duração: {item.duracao}</Text>
+            </TouchableOpacity>
+
+          </View>
       )}
-    </ScrollView>
+    />
+    
   );
 };

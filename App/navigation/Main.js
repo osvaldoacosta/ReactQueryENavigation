@@ -1,14 +1,19 @@
 import React from 'react';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 
 import { List } from '../screens/List';
 import { Post } from '../screens/Post';
 
-const MainStack = createStackNavigator();
+const Stack = createNativeStackNavigator();
 
 export const Main = () => (
-  <MainStack.Navigator>
-    <MainStack.Screen name="Lista de posts" component={List} />
-    <MainStack.Screen name="Post" component={Post} />
-  </MainStack.Navigator>
+
+
+
+  <Stack.Navigator initialRouteName="Home">
+    <Stack.Screen name="Curriculo" component={List}/>
+    <Stack.Screen name="Projetos" component={Post} />
+  </Stack.Navigator>
+
 );
